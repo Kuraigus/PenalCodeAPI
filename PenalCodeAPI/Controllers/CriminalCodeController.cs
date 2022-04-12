@@ -23,7 +23,7 @@ namespace PenalCodeAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CriminalCode>> Get(int id)
         {
-            var criminalCode = _context.CriminalCodes.FindAsync(id);
+            var criminalCode = await _context.CriminalCodes.FindAsync(id);
             if (criminalCode == null)
             {
                 return NotFound("Codigo nao encontrado!");
