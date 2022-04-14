@@ -12,7 +12,7 @@ using PenalCodeAPI.Data;
 namespace PenalCodeAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220414190214_CreateInitial")]
+    [Migration("20220414201302_CreateInitial")]
     partial class CreateInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,13 +77,13 @@ namespace PenalCodeAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<byte[]>("PasswordHash")
+                    b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("PasswordSalt")
+                    b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .IsRequired()

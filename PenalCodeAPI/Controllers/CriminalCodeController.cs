@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PenalCodeAPI.DTO;
 using PenalCodeAPI.Type;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace PenalCodeAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CriminalCodeController : ControllerBase
     {
         private readonly DataContext _context;
@@ -21,7 +24,6 @@ namespace PenalCodeAPI.Controllers
         {
             var pageResults = 5f;
             var pageCount = Math.Ceiling(_context.CriminalCodes.Count() / pageResults);
-
 
             var codes = await _context.CriminalCodes
                 .Skip((page - 1) * (int)pageResults)

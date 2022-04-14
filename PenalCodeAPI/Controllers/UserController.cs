@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using PenalCodeAPI.DTO;
-using System.Security.Cryptography;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
+using PenalCodeAPI.Services;
 
 namespace PenalCodeAPI.Controllers
 {
@@ -13,94 +9,41 @@ namespace PenalCodeAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly DataContext _context;
-        private readonly IConfiguration _configuration;
 
         public UserController(DataContext context, IConfiguration configuration)
         {
             _context = context;
-            _configuration = configuration;
-        }
-
-        [HttpPost("register")]
-        public async Task<ActionResult<User>> RegisterUser(UserDTO userDTO)
-        {
-            CreatePasswordHash(userDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            var user = new User
-            {
-                UserName = userDTO.UserName,
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt
-            };
-
-            _context.User.Add(user);
-            await _context.SaveChangesAsync();
-
-
-            return Ok(user);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDTO userDTO)
+        public async Task<IActionResult> UserLogin(User user)
         {
-            var users = await _context.User.ToListAsync();
-            var userFound = false;
+            var userData = _context.User.Where(u => u.UserName == user.UserName).FirstOrDefault();
 
-            foreach(var user in users)
+            if (userData == null)
             {
-                if (userDTO.UserName == user.UserName)
-                {
-                    if (VerifyPasswordHash(userDTO.Password, user.PasswordHash, user.PasswordSalt))
-                    {
-                        return Ok("Logado com sucesso!");
-                    }
-                }
+                return NotFound("Usuario nao encontrado!");
             }
 
-            return NotFound("Usuario nao encontrado ou senha digitada errada!");
-
-        }
-
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512())
+            if (userData.Password != user.Password)
             {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-
+                return BadRequest("Senha errada!");
             }
+
+            var token = TokenService.generateToken(user);
+            userData.Password = "";
+            return Ok(new { user = userData, token = token });
         }
 
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        [HttpPost("register")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> RegisterUser(User user)
         {
+            _context.User.Add(user);
+            await _context.SaveChangesAsync();
 
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordSalt);
-            }
+            return Ok("Usuario criado com sucesso!");
         }
 
-        private string createToken(User user)
-        {
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName)
-            };
-
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
-
-            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddDays(30),
-                signingCredentials: cred
-                );
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return jwt;
-        }
     }
 }
