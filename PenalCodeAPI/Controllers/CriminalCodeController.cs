@@ -54,19 +54,19 @@ namespace PenalCodeAPI.Controllers
 
                     case SortType.CreateUserId:
                         {
-                            codes.OrderBy(c => c.CreateUser).ToList();
+                            codes.OrderBy(c => c.CreateUserId).ToList();
                             break;
                         }
 
                     case SortType.UpdateUserId:
                         {
-                            codes = codes.OrderBy(c => c.UpdateUser).ToList();
+                            codes = codes.OrderBy(c => c.UpdateUserId).ToList();
                             break;
                         }
 
                     case SortType.StatusId:
                         {
-                            codes = codes.OrderBy(c => c.Status).ToList();
+                            codes = codes.OrderBy(c => c.StatusId).ToList();
                             break;
                         }
 
@@ -87,9 +87,9 @@ namespace PenalCodeAPI.Controllers
             if (filter != null)
             {
                 codes = codes.Where(c => c.Name.Contains(filter) ||
-                                    c.CreateUser.UserName.Contains(filter) ||
-                                    c.UpdateUser.UserName.Contains(filter) ||
-                                    c.Status.Name.Contains(filter)).ToList();
+                                    c.CreateUserId.Contains(filter) ||
+                                    c.UpdateUserId.Contains(filter) ||
+                                    c.StatusId.Contains(filter)).ToList();
             }
 
 
@@ -101,10 +101,10 @@ namespace PenalCodeAPI.Controllers
                 {
                     Id = code.Id,
                     CreateDate = code.CreateDate,
-                    CreateUser = new UserDTO { Id = code.CreateUser.Id, UserName = code.CreateUser.UserName },
+                    CreateUserId = code.CreateUserId,
                     UpdateDate = code.UpdateDate,
-                    UpdateUser = new UserDTO { Id = code.CreateUser.Id, UserName = code.CreateUser.UserName },
-                    Status = new StatusDTO { Id = code.Status.Id, Name = code.Status.Name },
+                    UpdateUserId = code.UpdateUserId,
+                    StatusId = code.StatusId,
                     Penalty = code.Penalty,
                     PrisonTime = code.PrisonTime,
                     Name = code.Name,
@@ -157,10 +157,10 @@ namespace PenalCodeAPI.Controllers
             dbCriminalCode.Name = request.Name;
             dbCriminalCode.Description = request.Description;
             dbCriminalCode.UpdateDate = request.UpdateDate;
-            dbCriminalCode.UpdateUser = request.UpdateUser;
+            dbCriminalCode.UpdateUserId = request.UpdateUserId;
             dbCriminalCode.PrisonTime =  request.PrisonTime;
             dbCriminalCode.Penalty = request.Penalty;
-            dbCriminalCode.Status = request.Status;
+            dbCriminalCode.StatusId = request.StatusId;
 
             await _context.SaveChangesAsync();
 

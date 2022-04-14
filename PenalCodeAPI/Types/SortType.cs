@@ -1,6 +1,6 @@
 ﻿namespace PenalCodeAPI.Type
 {
-        enum SortType
+        enum SortType : byte
         {
             Name,
             CreateDate,

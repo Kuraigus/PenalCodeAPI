@@ -7,11 +7,11 @@
         public string Description { get; set; } = String.Empty;
         public decimal Penalty { get; set; }
         public int PrisonTime { get; set; }
-        public StatusDTO Status { get; set; } = new StatusDTO();
+        public string StatusId { get; set; } = String.Empty;
         public DateTime CreateDate{ get; set; }
         public DateTime UpdateDate { get; set; }
-        public UserDTO CreateUser { get; set; } = new UserDTO();
-        public UserDTO UpdateUser { get; set; } = new UserDTO(); 
+        public string CreateUserId { get; set; } = String.Empty;
+        public string UpdateUserId { get; set; } = String.Empty;
 
     }
 }
