@@ -1,4 +1,5 @@
-﻿using PenalCodeAPI.DTO;
+﻿using Microsoft.AspNetCore.Identity;
+using PenalCodeAPI.DTO;
 
 namespace PenalCodeAPI.Model
 {
@@ -6,7 +7,9 @@ namespace PenalCodeAPI.Model
     {
         public int Id { get; set; }
         public string UserName { get; set; } = String.Empty;
-        public String Password { get; set; } = String.Empty;
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
+
 
     }
 }

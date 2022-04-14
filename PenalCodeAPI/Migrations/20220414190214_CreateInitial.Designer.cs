@@ -12,7 +12,7 @@ using PenalCodeAPI.Data;
 namespace PenalCodeAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220412205846_CreateInitial")]
+    [Migration("20220414190214_CreateInitial")]
     partial class CreateInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,7 +50,7 @@ namespace PenalCodeAPI.Migrations
                     b.Property<decimal>("Penalty")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("Prisontime")
+                    b.Property<int>("PrisonTime")
                         .HasColumnType("int");
 
                     b.Property<string>("StatusId")
@@ -66,7 +66,7 @@ namespace PenalCodeAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("criminalCodes");
+                    b.ToTable("CriminalCodes");
                 });
 
             modelBuilder.Entity("PenalCodeAPI.Model.User", b =>
@@ -77,9 +77,13 @@ namespace PenalCodeAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Password")
+                    b.Property<byte[]>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -87,7 +91,7 @@ namespace PenalCodeAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("user");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("PenalCodeAPI.Status", b =>
@@ -104,7 +108,7 @@ namespace PenalCodeAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("status");
+                    b.ToTable("Status");
                 });
 #pragma warning restore 612, 618
         }

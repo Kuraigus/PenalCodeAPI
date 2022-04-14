@@ -1,5 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using PenalCodeAPI.DTO;
+using System.Security.Cryptography;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace PenalCodeAPI.Controllers
 {
@@ -8,68 +13,94 @@ namespace PenalCodeAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IConfiguration _configuration;
 
-        public UserController(DataContext context)
+        public UserController(DataContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<User>>> Get()
+        [HttpPost("register")]
+        public async Task<ActionResult<User>> RegisterUser(UserDTO userDTO)
         {
-            return Ok(await _context.User.ToListAsync());
-        }
+            CreatePasswordHash(userDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-        [HttpGet("getById/{id}")]
-        public async Task<ActionResult<User>> GetById(int id)
-        {
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
+            var user = new User
             {
-                return NotFound("User nao encontrado!");
-            }
-            return Ok(user);
-        }
+                UserName = userDTO.UserName,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt
+            };
 
-
-        [HttpPost]
-        public async Task<ActionResult<List<User>>> AddCriminalCode(User user)
-        {
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok("Sucesso em adicionar usuario!");
+
+            return Ok(user);
         }
 
-        [HttpPut]
-        public async Task<ActionResult<string>> UpdateCriminalCode(User request)
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> Login(UserDTO userDTO)
         {
-            var dbUser = await _context.User.FindAsync(request.Id);
-            if (dbUser == null)
+            var users = await _context.User.ToListAsync();
+            var userFound = false;
+
+            foreach(var user in users)
             {
-                return NotFound("User nao encontrado!");
+                if (userDTO.UserName == user.UserName)
+                {
+                    if (VerifyPasswordHash(userDTO.Password, user.PasswordHash, user.PasswordSalt))
+                    {
+                        return Ok("Logado com sucesso!");
+                    }
+                }
             }
 
-            dbUser.UserName = request.UserName;
-            dbUser.Password = request.Password;
-            
-            await _context.SaveChangesAsync();
+            return NotFound("Usuario nao encontrado ou senha digitada errada!");
 
-            return Ok("Sucesso em atualizar user!");
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<string>> Delete(int id)
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            var dbUser = await _context.Status.FindAsync(id);
-            if (dbUser == null)
+            using (var hmac = new HMACSHA512())
             {
-                return NotFound("User nao encontrado!");
-            }
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
 
-            _context.Status.Remove(dbUser);
-            await _context.SaveChangesAsync();
-            return Ok("Sucesso em apagar user!");
+            }
+        }
+
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+
+            using (var hmac = new HMACSHA512(passwordSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(passwordSalt);
+            }
+        }
+
+        private string createToken(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName)
+            };
+
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+
+            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(30),
+                signingCredentials: cred
+                );
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
         }
     }
 }
