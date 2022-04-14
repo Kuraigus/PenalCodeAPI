@@ -1,8 +1,6 @@
-﻿using PenalCodeAPI.DTO;
-
-namespace PenalCodeAPI
+﻿namespace PenalCodeAPI.DTO
 {
-    public class Status
+    public class StatusDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }

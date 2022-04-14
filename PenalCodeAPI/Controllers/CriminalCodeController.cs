@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PenalCodeAPI.DTO;
+using PenalCodeAPI.Type;
 
 namespace PenalCodeAPI.Controllers
 {
@@ -15,10 +17,11 @@ namespace PenalCodeAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<CriminalCode>>> Get(int page, string? sort, string? filter)
+        public async Task<ActionResult<List<CriminalCodeDTO>>> Get(int page, string? sort, string? filter)
         {
             var pageResults = 5f;
             var pageCount = Math.Ceiling(_context.CriminalCodes.Count() / pageResults);
+
 
             var codes = await _context.CriminalCodes
                 .Skip((page - 1) * (int)pageResults)
@@ -27,51 +30,92 @@ namespace PenalCodeAPI.Controllers
 
             if (sort != null)
             {
-                if (sort == "name")
+                SortType sortType = SortType.none;
+
+                switch (sortType.FromString(sort))
                 {
-                    codes = codes.OrderBy(c => c.Name).ToList();
-                }
-                else if (sort == "createDate")
-                {
-                    codes = codes.OrderBy(c => c.CreateDate).ToList();
-                }
-                else if (sort == "updateDate")
-                {
-                    codes = codes.OrderBy(c => c.UpdateDate).ToList();
-                }
-                else if (sort == "createdByUserId")
-                {
-                    codes = codes.OrderBy(c => c.CreateUserId).ToList();
-                }
-                else if (sort == "updatedByUserId")
-                {
-                    codes = codes.OrderBy(c => c.UpdateUserId).ToList();
-                }
-                else if (sort == "statusId")
-                {
-                    codes = codes.OrderBy(c => c.StatusId).ToList();
-                }
-                else if (sort == "penalty")
-                {
-                    codes = codes.OrderBy(c => c.Penalty).ToList();
-                }
-                else if (sort == "prisonTime")
-                {
-                    codes = codes.OrderBy(c => c.PrisonTime).ToList();
+                    case SortType.Name:
+                        {
+                            codes = codes.OrderBy(c => c.Name).ToList();
+                            break;
+                        }
+
+                    case SortType.CreateDate:
+                        {
+                            codes = codes.OrderBy(c => c.CreateDate).ToList();
+                            break;
+                        }
+
+                    case SortType.UpdateDate:
+                        {
+                            codes = codes.OrderBy(c => c.UpdateDate).ToList();
+                            break;
+                        }
+
+                    case SortType.CreateUserId:
+                        {
+                            codes.OrderBy(c => c.CreateUser).ToList();
+                            break;
+                        }
+
+                    case SortType.UpdateUserId:
+                        {
+                            codes = codes.OrderBy(c => c.UpdateUser).ToList();
+                            break;
+                        }
+
+                    case SortType.StatusId:
+                        {
+                            codes = codes.OrderBy(c => c.Status).ToList();
+                            break;
+                        }
+
+                    case SortType.Penalty:
+                        {
+                            codes = codes = codes.OrderBy(c => c.Penalty).ToList();
+                            break;
+                        }
+
+                    case SortType.PrisonTime:
+                        {
+                            codes = codes.OrderBy(c => c.PrisonTime).ToList();
+                            break;
+                        }
                 }
             }
 
             if (filter != null)
             {
                 codes = codes.Where(c => c.Name.Contains(filter) ||
-                                    c.CreateUserId.Contains(filter) ||
-                                    c.UpdateUserId.Contains(filter) ||
-                                    c.StatusId.Contains(filter)).ToList();
+                                    c.CreateUser.UserName.Contains(filter) ||
+                                    c.UpdateUser.UserName.Contains(filter) ||
+                                    c.Status.Name.Contains(filter)).ToList();
             }
 
-            var response = new CriminalCodeResponse
+
+            List<CriminalCodeDTO> criminalCodeDTOs = new List<CriminalCodeDTO>();
+
+            foreach(var code in codes)
             {
-                CriminalCodes = codes,
+                criminalCodeDTOs.Add(new CriminalCodeDTO
+                {
+                    Id = code.Id,
+                    CreateDate = code.CreateDate,
+                    CreateUser = new UserDTO { Id = code.CreateUser.Id, UserName = code.CreateUser.UserName },
+                    UpdateDate = code.UpdateDate,
+                    UpdateUser = new UserDTO { Id = code.CreateUser.Id, UserName = code.CreateUser.UserName },
+                    Status = new StatusDTO { Id = code.Status.Id, Name = code.Status.Name },
+                    Penalty = code.Penalty,
+                    PrisonTime = code.PrisonTime,
+                    Name = code.Name,
+                    Description = code.Description,
+                });
+            }
+
+
+            var response = new PageableResponse <CriminalCodeDTO>
+            {
+                Result = criminalCodeDTOs,
                 CurrentPage = page,
                 Pages = (int)pageCount
             };
@@ -113,10 +157,10 @@ namespace PenalCodeAPI.Controllers
             dbCriminalCode.Name = request.Name;
             dbCriminalCode.Description = request.Description;
             dbCriminalCode.UpdateDate = request.UpdateDate;
-            dbCriminalCode.UpdateUserId = request.UpdateUserId;
+            dbCriminalCode.UpdateUser = request.UpdateUser;
             dbCriminalCode.PrisonTime =  request.PrisonTime;
             dbCriminalCode.Penalty = request.Penalty;
-            dbCriminalCode.StatusId = request.StatusId;
+            dbCriminalCode.Status = request.Status;
 
             await _context.SaveChangesAsync();
 

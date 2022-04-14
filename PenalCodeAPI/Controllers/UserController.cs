@@ -42,7 +42,7 @@ namespace PenalCodeAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<List<User>>> UpdateCriminalCode(User request)
+        public async Task<ActionResult<string>> UpdateCriminalCode(User request)
         {
             var dbUser = await _context.User.FindAsync(request.Id);
             if (dbUser == null)
@@ -59,15 +59,15 @@ namespace PenalCodeAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<List<User>>> Delete(int id)
+        public async Task<ActionResult<string>> Delete(int id)
         {
-            var dbUser = await _context.CriminalCodes.FindAsync(id);
+            var dbUser = await _context.Status.FindAsync(id);
             if (dbUser == null)
             {
                 return NotFound("User nao encontrado!");
             }
 
-            _context.CriminalCodes.Remove(dbUser);
+            _context.Status.Remove(dbUser);
             await _context.SaveChangesAsync();
             return Ok("Sucesso em apagar user!");
         }

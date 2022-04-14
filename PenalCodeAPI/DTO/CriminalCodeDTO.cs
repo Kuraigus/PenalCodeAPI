@@ -1,19 +1,17 @@
-﻿using PenalCodeAPI.DTO;
-
-namespace PenalCodeAPI
+﻿namespace PenalCodeAPI.DTO
 {
-    public class CriminalCode
+    public class CriminalCodeDTO
     {
         public int Id { get; set; }
         public string Name { get; set; } = String.Empty;
         public string Description { get; set; } = String.Empty;
         public decimal Penalty { get; set; }
         public int PrisonTime { get; set; }
-        public Status Status { get; set; } = new Status();
+        public StatusDTO Status { get; set; } = new StatusDTO();
         public DateTime CreateDate{ get; set; }
         public DateTime UpdateDate { get; set; }
-        public User CreateUser { get; set; } = new User();
-        public User UpdateUser { get; set; } = new User();
+        public UserDTO CreateUser { get; set; } = new UserDTO();
+        public UserDTO UpdateUser { get; set; } = new UserDTO(); 
 
     }
 }
