@@ -15,6 +15,19 @@ namespace PenalCodeAPI.Controllers
             _context = context;
         }
 
+        [HttpGet("getById/{id}")]
+        public async Task<ActionResult<User>> GetById(int id)
+        {
+            var user = await _context.User.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound("Status nao encontrado!");
+            }
+
+            user.Password = "";
+            return Ok(user);
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> UserLogin(User user)
         {
@@ -30,7 +43,7 @@ namespace PenalCodeAPI.Controllers
                 return BadRequest("Senha errada!");
             }
 
-            var token = TokenService.generateToken(user);
+            var token = TokenService.generateToken(userData);
             userData.Password = "";
             return Ok(new { user = userData, token = token });
         }

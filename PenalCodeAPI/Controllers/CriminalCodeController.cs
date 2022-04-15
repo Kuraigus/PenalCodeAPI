@@ -139,6 +139,7 @@ namespace PenalCodeAPI.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<string>> AddCriminalCode(CriminalCode criminalCode)
         {
             _context.CriminalCodes.Add(criminalCode);
@@ -148,6 +149,7 @@ namespace PenalCodeAPI.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<string>> UpdateCriminalCode(CriminalCode request)
         {
             var dbCriminalCode = await _context.CriminalCodes.FindAsync(request.Id);
@@ -170,6 +172,7 @@ namespace PenalCodeAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<string>> Delete(int id)
         {
             var dbCriminalCode = await _context.CriminalCodes.FindAsync(id);

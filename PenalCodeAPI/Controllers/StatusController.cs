@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PenalCodeAPI.Controllers
 {
@@ -32,7 +33,8 @@ namespace PenalCodeAPI.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<string>> AddCriminalCode(Status status)
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<string>> AddStatus(Status status)
         {
             _context.Status.Add(status);
             await _context.SaveChangesAsync();
@@ -41,7 +43,8 @@ namespace PenalCodeAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<string>> UpdateCriminalCode(Status request)
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<string>> UpdateStatus(Status request)
         {
             var dbStatus = await _context.Status.FindAsync(request.Id);
             if (dbStatus == null)
@@ -57,7 +60,8 @@ namespace PenalCodeAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<string>> Delete(int id)
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<string>> DeleteStatus(int id)
         {
             var dbStatus = await _context.Status.FindAsync(id);
             if (dbStatus == null)
