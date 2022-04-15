@@ -45,9 +45,6 @@ Para realizar autenticacao, chamar primeiro a rota de log in, logar com usuario 
 autorizar as chamadas, dentro do swagger e possivel autenticar com o botao authenticate localizado na parte superior direita
 colocando no padrao "Bearer {tokenRecebidoPeloLogin}"
 
-- Recomendacao de uso 
-
-
 # DOCUMENTACAO
 
 ## Rotas Status
