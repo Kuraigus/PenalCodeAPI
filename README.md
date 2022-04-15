@@ -177,7 +177,7 @@ colocando no padrao "Bearer {tokenRecebidoPeloLogin}"
       - User nao encontrado
 
 - POST api/User/register
-  - Registra user novo(necessario permissao de admin)
+  - Registra user novo
 
   - Body:
     - UserName: String, obrigatorio.
@@ -190,6 +190,8 @@ colocando no padrao "Bearer {tokenRecebidoPeloLogin}"
   - Possiveis Retornos:
     - 200 
       - User criado com sucesso
+    - 401
+      - nao tem permissao para criar user
     - 500
       - Erro interno ao criar usuario
 
@@ -206,8 +208,31 @@ colocando no padrao "Bearer {tokenRecebidoPeloLogin}"
   - Possiveis Retornos:
     - 200
       - Body com informacao do user
+    - 401
+      - nao tem permissao para listar usuario especifico
     - 404
       - ID do user nao encontrado
+
+- PUT api/User/
+  - Atualiza usuario especifico.
+
+  - Body:
+    - Id: int, obrigatorio.
+    - UserName: String, obrigatorio.
+    - Password: String, obrigatorio.
+    - Role: String, obrigatorio.
+
+  - Params:
+    - Nao requer body
+
+  - Possiveis Retornos:
+    - 200
+      - atualizacao feita com sucesso
+    - 401
+      - nao tem permissao para atualizar codigo penal
+    - 500
+      - Erro interno ao criar o codigo penal
+
 
 - DELETE /users/:userId
   - Deleta Usuario especifico.
@@ -216,11 +241,13 @@ colocando no padrao "Bearer {tokenRecebidoPeloLogin}"
     - Nao requer body
 
   - Params:
-    - userId: String, obrigatorio.
+    - Id: String, obrigatorio.
   
   - Possiveis Retornos:
     - 200
       - body com a mensagem "User deletado com sucesso"
+    - 401
+      - nao tem permissao para remover user
     - 404
       - ID do user nao encontrado
 
@@ -255,6 +282,8 @@ colocando no padrao "Bearer {tokenRecebidoPeloLogin}"
   - Possiveis Retornos:
     - 200 
       - body com lista de status
+    - 401
+      - nao tem permissao para listar status
     - 500
       - Erro interno ao listar status
   
@@ -271,6 +300,8 @@ colocando no padrao "Bearer {tokenRecebidoPeloLogin}"
   - Possiveis Retornos:
     - 200
       - Body com informacao do Status
+    - 401
+      - nao tem permissao para listar status
     - 404
       - ID do status nao encontrado
 
@@ -289,7 +320,7 @@ colocando no padrao "Bearer {tokenRecebidoPeloLogin}"
     - 200
       - atualizacao feita com sucesso
     - 401
-      - nao tem permissao para atualiza status
+      - nao tem permissao para atualizar status
     - 500
       - Erro interno ao criar o status
 

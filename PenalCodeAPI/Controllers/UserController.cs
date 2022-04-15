@@ -16,6 +16,7 @@ namespace PenalCodeAPI.Controllers
         }
 
         [HttpGet("getById/{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<User>> GetById(int id)
         {
             var user = await _context.User.FindAsync(id);
@@ -56,6 +57,40 @@ namespace PenalCodeAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Usuario criado com sucesso!");
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<ActionResult<string>> UpdateStatus(User request)
+        {
+            var dbUser = await _context.User.FindAsync(request.Id);
+            if (dbUser == null)
+            {
+                return NotFound("User nao encontrado!");
+            }
+
+            dbUser.UserName = request.UserName;
+            dbUser.Password = request.Password;
+            dbUser.Role = request.Role;
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Sucesso em atualizar user!");
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<string>> DeleteStatus(int id)
+        {
+            var dbUser = await _context.User.FindAsync(id);
+            if (dbUser == null)
+            {
+                return NotFound("user nao encontrado!");
+            }
+
+            _context.User.Remove(dbUser);
+            await _context.SaveChangesAsync();
+            return Ok("Sucesso em apagar User!");
         }
 
     }
