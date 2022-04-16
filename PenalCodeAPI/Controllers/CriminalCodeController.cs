@@ -22,7 +22,7 @@ namespace PenalCodeAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<CriminalCodeDTO>>> Get(int page, string? sort, string? filter)
+        public async Task<ActionResult<List<GetCriminalCodeDTO>>> Get(int page, string? sort, string? filter)
         {
             try
             {
@@ -41,13 +41,13 @@ namespace PenalCodeAPI.Controllers
         }
 
         [HttpGet("getById/{id}")]
-        public async Task<ActionResult<CriminalCodeDTO>> GetById(int id)
+        public async Task<ActionResult<GetCriminalCodeDTO>> GetById(int id)
         {
             try
             {
                 var response = _criminalCodeService.GetCriminalCode(id);
 
-                return Ok(_criminalCodeConverter.CriminalCodeToCriminalCodeDTO(response));
+                return Ok(_criminalCodeConverter.CriminalCodeToGetCriminalCodeDTO(response));
             }
             catch (KeyNotFoundException e)
             {
@@ -62,12 +62,12 @@ namespace PenalCodeAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<string>> AddCriminalCode(CriminalCodeDTO criminalCodeDTO)
+        public async Task<ActionResult<string>> AddCriminalCode(EditCriminalCodeDTO EditcriminalCodeDTO)
         {
             try
             {
                 var claims = User.Claims.Where(c => c.Type == ClaimTypes.Name).FirstOrDefault();
-                _criminalCodeService.CreateCriminalCode(_criminalCodeConverter.CriminalCodeDTOToCriminalCode(criminalCodeDTO), claims.Value);
+                _criminalCodeService.CreateCriminalCode(_criminalCodeConverter.EditCriminalCodeDTOToCriminalCode(EditcriminalCodeDTO), claims.Value);
 
                 return Ok();
             }
@@ -83,12 +83,12 @@ namespace PenalCodeAPI.Controllers
 
         [HttpPut]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<string>> UpdateCriminalCode(CriminalCodeDTO criminalCodeDTO)
+        public async Task<ActionResult<string>> UpdateCriminalCode(EditCriminalCodeDTO EditcriminalCodeDTO)
         {
             try
             {
                 var claims = User.Claims.Where(c => c.Type == ClaimTypes.Name).FirstOrDefault();
-                _criminalCodeService.UpdateCriminalCode(_criminalCodeConverter.CriminalCodeDTOToCriminalCode(criminalCodeDTO), claims.Value);
+                _criminalCodeService.UpdateCriminalCode(_criminalCodeConverter.EditCriminalCodeDTOToCriminalCode(EditcriminalCodeDTO), claims.Value);
              
                 return Ok();
             }

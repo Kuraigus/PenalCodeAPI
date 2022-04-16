@@ -41,11 +41,11 @@ namespace PenalCodeAPI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> UserLogin(UserDTO userDTO)
+        public async Task<IActionResult> UserLogin(UserLoginDTO userLoginDTO)
         {
             try
             {
-                var response = _userService.login(_userConverter.UserDTOToUser(userDTO));
+                var response = _userService.login(_userConverter.UserLoginDTOToUser(userLoginDTO));
 
                 return Ok(response);
             }
@@ -62,11 +62,11 @@ namespace PenalCodeAPI.Controllers
 
         [HttpPost("register")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> RegisterUser(UserDTO userDTO)
+        public async Task<IActionResult> RegisterUser(UserRegisterDTO userRegisterDTO)
         {
             try
             {
-                _userService.CreateUser(_userConverter.UserDTOToUser(userDTO));
+                _userService.CreateUser(_userConverter.UserRegisterDTOToUser(userRegisterDTO));
 
                 return Ok();
             }
@@ -82,11 +82,11 @@ namespace PenalCodeAPI.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<ActionResult<string>> UpdateUser(UserDTO request)
+        public async Task<ActionResult<string>> UpdateUser(UserRegisterDTO userRegisterDTO)
         {
             try
             {
-                var response = _userService.UpdateUser(_userConverter.UserDTOToUser(request));
+                var response = _userService.UpdateUser(_userConverter.UserRegisterDTOToUser(userRegisterDTO));
 
                 return Ok(response);
             }
@@ -103,11 +103,11 @@ namespace PenalCodeAPI.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<string>> DeleteUser(UserDTO userDTO)
+        public async Task<ActionResult<string>> DeleteUser(int id)
         {
             try
             {
-                _userService.DeleteUser(_userConverter.UserDTOToUser(userDTO));
+                _userService.DeleteUser(id);
 
                 return Ok();
             }

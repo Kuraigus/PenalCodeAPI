@@ -8,7 +8,6 @@ namespace PenalCodeAPI.Converters
         {
             return new CriminalCode
             {
-                Id = criminalCodeDTO.Id,
                 Name = criminalCodeDTO.Name,
                 Description = criminalCodeDTO.Description,
                 Penalty = criminalCodeDTO.Penalty,
@@ -21,9 +20,55 @@ namespace PenalCodeAPI.Converters
             };
         }
 
+        public CriminalCode GetCriminalCodeDTOToCriminalCode(GetCriminalCodeDTO GetcriminalCodeDTO)
+        {
+            return new CriminalCode
+            {
+                Id = GetcriminalCodeDTO.Id,
+                Name = GetcriminalCodeDTO.Name,
+                Description = GetcriminalCodeDTO.Description,
+                Penalty = GetcriminalCodeDTO.Penalty,
+                PrisonTime = GetcriminalCodeDTO.PrisonTime,
+                StatusId = GetcriminalCodeDTO.StatusId,
+                CreateDate = GetcriminalCodeDTO.CreateDate,
+                UpdateDate = GetcriminalCodeDTO.UpdateDate,
+                CreateUserId = GetcriminalCodeDTO.CreateUserId,
+                UpdateUserId = GetcriminalCodeDTO.UpdateUserId,
+            };
+        }
+
+        public CriminalCode EditCriminalCodeDTOToCriminalCode(EditCriminalCodeDTO EditcriminalCodeDTO)
+        {
+            return new CriminalCode
+            {
+                Id = EditcriminalCodeDTO.Id,
+                Name = EditcriminalCodeDTO.Name,
+                Description = EditcriminalCodeDTO.Description,
+                Penalty = EditcriminalCodeDTO.Penalty,
+                PrisonTime = EditcriminalCodeDTO.PrisonTime,
+                StatusId = EditcriminalCodeDTO.StatusId
+            };
+        }
+
         public CriminalCodeDTO CriminalCodeToCriminalCodeDTO(CriminalCode criminalCode)
         {
             return new CriminalCodeDTO
+            {
+                Name = criminalCode.Name,
+                Description = criminalCode.Description,
+                Penalty = criminalCode.Penalty,
+                PrisonTime = criminalCode.PrisonTime,
+                StatusId = criminalCode.StatusId,
+                CreateDate = criminalCode.CreateDate,
+                UpdateDate = criminalCode.UpdateDate,
+                CreateUserId = criminalCode.CreateUserId,
+                UpdateUserId = criminalCode.UpdateUserId,
+            };
+        }
+
+        public GetCriminalCodeDTO CriminalCodeToGetCriminalCodeDTO(CriminalCode criminalCode)
+        {
+            return new GetCriminalCodeDTO
             {
                 Id = criminalCode.Id,
                 Name = criminalCode.Name,

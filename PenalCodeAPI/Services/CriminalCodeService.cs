@@ -98,6 +98,10 @@ namespace PenalCodeAPI.Services
 
             criminalCode.CreateUserId = Int32.Parse(userId);
             criminalCode.UpdateUserId = Int32.Parse(userId);
+            criminalCode.CreateDate = DateTime.Now;
+            criminalCode.UpdateDate = DateTime.Now;
+
+            _criminalCodeRepository.CreateCriminalCode(criminalCode);
         }
 
         public void UpdateCriminalCode(CriminalCode request, string userId)
@@ -108,7 +112,7 @@ namespace PenalCodeAPI.Services
 
             dbCriminalCode.Name = request.Name;
             dbCriminalCode.Description = request.Description;
-            dbCriminalCode.UpdateDate = request.UpdateDate;
+            dbCriminalCode.UpdateDate = DateTime.Now;
             dbCriminalCode.UpdateUserId = Int32.Parse(userId);
             dbCriminalCode.PrisonTime = request.PrisonTime;
             dbCriminalCode.Penalty = request.Penalty;
@@ -122,6 +126,9 @@ namespace PenalCodeAPI.Services
             var criminalCode = _criminalCodeRepository.GetCriminalCode(id);
             if (criminalCode == null)
                 throw new KeyNotFoundException("Codigo penal nao encontrado!");
+
+
+            _criminalCodeRepository.DeleteCriminalCode(criminalCode);
         }
 
     }

@@ -104,11 +104,11 @@ namespace PenalCodeAPI.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<string>> DeleteStatus(StatusDTO statusDTO)
+        public async Task<ActionResult<string>> DeleteStatus(int id)
         {
             try
             {
-                _statusService.DeleteStatus(_statusConverter.StatusDTOToStatus(statusDTO));
+                _statusService.DeleteStatus(id);
 
                 return Ok();
             }

@@ -43,13 +43,13 @@ namespace PenalCodeAPI.Services
             _genericRepository.SaveChanges();
         }
 
-        public void DeleteStatus(Status status)
+        public void DeleteStatus(int id)
         {
-            var dbStatus = _statusRepository.GetStatus(status.Id);
+            var dbStatus = _statusRepository.GetStatus(id);
             if (dbStatus == null)
                 throw new KeyNotFoundException("Status nao encontrado!");
 
-            _statusRepository.DeleteStatus(status);
+            _statusRepository.DeleteStatus(dbStatus);
         }
     }
 }

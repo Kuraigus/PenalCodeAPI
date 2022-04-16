@@ -8,9 +8,7 @@ namespace PenalCodeAPI.Converters
         {
             return new User
             {
-                Id = userDTO.Id,
                 UserName = userDTO.UserName,
-                Password = userDTO.Password,
                 Role = userDTO.Role,
             };
         }
@@ -19,10 +17,27 @@ namespace PenalCodeAPI.Converters
         {
             return new UserDTO
             {
-                Id = user.Id,
                 UserName = user.UserName,
-                Password = user.Password,
                 Role = user.Role,
+            };
+        }
+
+        public User UserRegisterDTOToUser(UserRegisterDTO userRegisterDTO)
+        {
+            return new User
+            {
+                UserName = userRegisterDTO.UserName,
+                Password = userRegisterDTO.Password,
+                Role = userRegisterDTO.Role,
+            };
+        }
+
+        public User UserLoginDTOToUser(UserLoginDTO userLoginDTO)
+        {
+            return new User
+            {
+                UserName = userLoginDTO.UserName,
+                Password = userLoginDTO.Password
             };
         }
     }

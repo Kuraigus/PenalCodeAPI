@@ -28,12 +28,14 @@ namespace PenalCodeAPI.Services
 
         public User GetUser(int id)
         {
-            var reponse = _userRepository.GetUser(id);
+            var response = _userRepository.GetUser(id);
 
-            if (reponse == null)
+            if (response == null)
                 throw new KeyNotFoundException("Usuario nao encontrado!");
 
-            return reponse;
+            response.Password = "";
+
+            return response;
         }
 
         public void CreateUser(User user)
@@ -56,9 +58,9 @@ namespace PenalCodeAPI.Services
             return "Sucesso em atualizar user!";
         }
 
-        public void DeleteUser(User user)
+        public void DeleteUser(int id)
         {
-            var dbUser = _userRepository.GetUser(user.Id);
+            var dbUser = _userRepository.GetUser(id);
             if (dbUser == null)
                 throw new KeyNotFoundException("Usuario nao encontrado!");
 

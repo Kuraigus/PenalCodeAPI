@@ -8,7 +8,6 @@ namespace PenalCodeAPI.Converters
         {
             return new Status
             {
-                Id = statusDTO.Id,
                 Name = statusDTO.Name
             };
         }
@@ -16,7 +15,6 @@ namespace PenalCodeAPI.Converters
         {
             return new StatusDTO
             {
-                Id = status.Id,
                 Name = status.Name
             };
         }
