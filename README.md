@@ -123,19 +123,14 @@ colocando no padrao "Bearer {tokenRecebidoPeloLogin}"
   - Atualiza CriminalCode especifico.
 
   - Body:
-    - Id: int, obrigatorio.
     - Name: String, obrigatorio.
     - Description: String, obrigatorio.
     - Penalty: Decimal, obrigatorio.
     - PrisonTime: int, obrigatorio.
     - StatusId: String, obrigatorio.
-    - CreateDate: DateTime, obrigatorio.
-    - UpdateDate: DateTime, obrigatorio.
-    - CreateUserId: String, obrigatorio.
-    - UpdateUserId: String, obrigatorio.
 
   - Params:
-    - Nao requer body
+    - Id: int, obrigatorio.
 
   - Possiveis Retornos:
     - 200
@@ -224,13 +219,12 @@ colocando no padrao "Bearer {tokenRecebidoPeloLogin}"
   - Atualiza usuario especifico.
 
   - Body:
-    - Id: int, obrigatorio.
     - UserName: String, obrigatorio.
     - Password: String, obrigatorio.
     - Role: String, obrigatorio.
 
   - Params:
-    - Nao requer body
+    - Id: int, obrigatorio.
 
   - Possiveis Retornos:
     - 200
@@ -317,11 +311,10 @@ colocando no padrao "Bearer {tokenRecebidoPeloLogin}"
   - Atualiza status especifico.
 
   - Body:
-    - Id: Int, obrigatorio.
     - Name: String, obrigatorio.
 
   - Params:
-    - Nao requer body
+    - Id: Int, obrigatorio.
 
   - Possiveis Retornos:
     - 200
