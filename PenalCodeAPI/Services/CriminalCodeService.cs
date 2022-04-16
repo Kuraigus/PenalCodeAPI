@@ -1,6 +1,5 @@
 ﻿using PenalCodeAPI.DTO;
 using PenalCodeAPI.Interfaces;
-using PenalCodeAPI.Type;
 
 namespace PenalCodeAPI.Services
 {

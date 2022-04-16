@@ -57,6 +57,12 @@ namespace PenalCodeAPI.Migrations
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
                 });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new [] { "Id", "UserName", "Password", "Role" } ,
+                values: new object[] { "1", "admin", "admin", "admin" }
+                );
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

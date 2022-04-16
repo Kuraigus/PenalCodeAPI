@@ -49,7 +49,7 @@ Para realizar autenticacao, chamar primeiro a rota de log in, logar com usuario 
 autorizar as chamadas, dentro do swagger e possivel autenticar com o botao authenticate localizado na parte superior direita
 colocando no padrao "Bearer {tokenRecebidoPeloLogin}"
 
-- Recomendacao criar usuario "admin" diretamento no banco para conseguir token com acesso geral. o usuario pode ter 2 roles, user ou admin.
+- Assim que rodar "dotnet ef database update" um usuario com role de admin ja sera criado. login: admin, senha: admin
 
 
 # DOCUMENTACAO
