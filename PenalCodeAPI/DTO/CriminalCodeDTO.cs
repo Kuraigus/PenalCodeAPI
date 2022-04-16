@@ -12,6 +12,5 @@
         public DateTime UpdateDate { get; set; }
         public string CreateUserId { get; set; } = String.Empty;
         public string UpdateUserId { get; set; } = String.Empty;
-
     }
 }

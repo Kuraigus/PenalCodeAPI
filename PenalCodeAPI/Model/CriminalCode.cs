@@ -1,6 +1,4 @@
-﻿using PenalCodeAPI.DTO;
-
-namespace PenalCodeAPI
+﻿namespace PenalCodeAPI
 {
     public class CriminalCode
     {

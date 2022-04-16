@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PenalCodeAPI.Converters;
 using PenalCodeAPI.DTO;
-using PenalCodeAPI.Type;
-using System.IdentityModel.Tokens.Jwt;
+using PenalCodeAPI.Services;
 
 namespace PenalCodeAPI.Controllers
 {
@@ -12,178 +11,72 @@ namespace PenalCodeAPI.Controllers
     [Authorize]
     public class CriminalCodeController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly CriminalCodeService _criminalCodeService;
+        private readonly CriminalCodeConverter _criminalCodeConverter;
 
-        public CriminalCodeController(DataContext context)
+        public CriminalCodeController(CriminalCodeService criminalCodeService, CriminalCodeConverter criminalCodeConverter)
         {
-            _context = context;
+            _criminalCodeService = criminalCodeService;
+            _criminalCodeConverter = criminalCodeConverter;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<CriminalCodeDTO>>> Get(int page, string? sort, string? filter)
         {
-            var pageResults = 5f;
-            var pageCount = Math.Ceiling(_context.CriminalCodes.Count() / pageResults);
+           var response = _criminalCodeService.GetCriminalCodes(page, sort, filter);
 
-            var codes = await _context.CriminalCodes
-                .Skip((page - 1) * (int)pageResults)
-                .Take((int)pageResults)
-                .ToListAsync();
-
-            if (sort != null)
-            {
-                SortType sortType = SortType.none;
-
-                switch (sortType.FromString(sort))
-                {
-                    case SortType.Name:
-                        {
-                            codes = codes.OrderBy(c => c.Name).ToList();
-                            break;
-                        }
-
-                    case SortType.CreateDate:
-                        {
-                            codes = codes.OrderBy(c => c.CreateDate).ToList();
-                            break;
-                        }
-
-                    case SortType.UpdateDate:
-                        {
-                            codes = codes.OrderBy(c => c.UpdateDate).ToList();
-                            break;
-                        }
-
-                    case SortType.CreateUserId:
-                        {
-                            codes.OrderBy(c => c.CreateUserId).ToList();
-                            break;
-                        }
-
-                    case SortType.UpdateUserId:
-                        {
-                            codes = codes.OrderBy(c => c.UpdateUserId).ToList();
-                            break;
-                        }
-
-                    case SortType.StatusId:
-                        {
-                            codes = codes.OrderBy(c => c.StatusId).ToList();
-                            break;
-                        }
-
-                    case SortType.Penalty:
-                        {
-                            codes = codes = codes.OrderBy(c => c.Penalty).ToList();
-                            break;
-                        }
-
-                    case SortType.PrisonTime:
-                        {
-                            codes = codes.OrderBy(c => c.PrisonTime).ToList();
-                            break;
-                        }
-                }
-            }
-
-            if (filter != null)
-            {
-                codes = codes.Where(c => c.Name.Contains(filter) ||
-                                    c.CreateUserId.Contains(filter) ||
-                                    c.UpdateUserId.Contains(filter) ||
-                                    c.StatusId.Contains(filter)).ToList();
-            }
-
-
-            List<CriminalCodeDTO> criminalCodeDTOs = new List<CriminalCodeDTO>();
-
-            foreach(var code in codes)
-            {
-                criminalCodeDTOs.Add(new CriminalCodeDTO
-                {
-                    Id = code.Id,
-                    CreateDate = code.CreateDate,
-                    CreateUserId = code.CreateUserId,
-                    UpdateDate = code.UpdateDate,
-                    UpdateUserId = code.UpdateUserId,
-                    StatusId = code.StatusId,
-                    Penalty = code.Penalty,
-                    PrisonTime = code.PrisonTime,
-                    Name = code.Name,
-                    Description = code.Description,
-                });
-            }
-
-
-            var response = new PageableResponse <CriminalCodeDTO>
-            {
-                Result = criminalCodeDTOs,
-                CurrentPage = page,
-                Pages = (int)pageCount
-            };
-
+            if (response == null)
+                return BadRequest();
 
             return Ok(response);
         }
 
         [HttpGet("getById/{id}")]
-        public async Task<ActionResult<CriminalCode>> GetById(int id)
+        public async Task<ActionResult<CriminalCodeDTO>> GetById(int id)
         {
-            var criminalCode = await _context.CriminalCodes.FindAsync(id);
-            if (criminalCode == null)
-            {
-                return NotFound("Codigo nao encontrado!");
-            }
-            return Ok(criminalCode);
+            var response = _criminalCodeService.GetCriminalCode(id);
+
+            if (response == null)
+                return BadRequest();
+
+            return Ok(_criminalCodeConverter.CriminalCodeToCriminalCodeDTO(response));
         }
 
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<string>> AddCriminalCode(CriminalCode criminalCode)
+        public async Task<ActionResult<string>> AddCriminalCode(CriminalCodeDTO criminalCodeDTO)
         {
-            _context.CriminalCodes.Add(criminalCode);
-            await _context.SaveChangesAsync();
+            var response = _criminalCodeService.CreateCriminalCode(_criminalCodeConverter.CriminalCodeDTOToCriminalCode(criminalCodeDTO));
 
-            return Ok("Sucesso em adicionar codigo penal!");
+            if (response == null)
+                return BadRequest();
+
+            return Ok(response);
         }
 
         [HttpPut]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<string>> UpdateCriminalCode(CriminalCode request)
+        public async Task<ActionResult<string>> UpdateCriminalCode(CriminalCodeDTO criminalCodeDTO)
         {
-            var dbCriminalCode = await _context.CriminalCodes.FindAsync(request.Id);
-            if (dbCriminalCode == null)
-            {
-                return NotFound("Codigo nao encontrado!");
-            }
+            var response = _criminalCodeService.UpdateCriminalCode(_criminalCodeConverter.CriminalCodeDTOToCriminalCode(criminalCodeDTO));
 
-            dbCriminalCode.Name = request.Name;
-            dbCriminalCode.Description = request.Description;
-            dbCriminalCode.UpdateDate = request.UpdateDate;
-            dbCriminalCode.UpdateUserId = request.UpdateUserId;
-            dbCriminalCode.PrisonTime =  request.PrisonTime;
-            dbCriminalCode.Penalty = request.Penalty;
-            dbCriminalCode.StatusId = request.StatusId;
+            if (response == null)
+                return BadRequest();
 
-            await _context.SaveChangesAsync();
-
-            return Ok("Sucesso em atualizar codigo penal!");
+            return Ok(response);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]
         public async Task<ActionResult<string>> Delete(int id)
         {
-            var dbCriminalCode = await _context.CriminalCodes.FindAsync(id);
-            if (dbCriminalCode == null)
-            {
-                return NotFound("Codigo nao encontrado!");
-            }
+            var response = _criminalCodeService.DeleteCriminalCode(id);
 
-            _context.CriminalCodes.Remove(dbCriminalCode);
-            await _context.SaveChangesAsync();
-            return Ok("Sucesso em apagar codigo penal!");
+            if (response == null)
+                return BadRequest();
+
+            return Ok(response);
         }
     }
 }

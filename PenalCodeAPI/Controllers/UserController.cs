@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using PenalCodeAPI.Services;
+using PenalCodeAPI.DTO;
+using PenalCodeAPI.Converters;
 
 namespace PenalCodeAPI.Controllers
 {
@@ -8,89 +10,72 @@ namespace PenalCodeAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly UserService _userService;
+        private readonly UserConverter _userConverter;
 
-        public UserController(DataContext context, IConfiguration configuration)
+        public UserController(UserService userService, UserConverter userConverter)
         {
-            _context = context;
+            _userService = userService;
+            _userConverter = userConverter;
         }
 
         [HttpGet("getById/{id}")]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<User>> GetById(int id)
+        public async Task<ActionResult<UserDTO>> GetById(int id)
         {
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound("Status nao encontrado!");
-            }
+            var response = _userService.GetUser(id);
 
-            user.Password = "";
-            return Ok(user);
+            if (response == null)
+                return BadRequest();
+
+            return Ok(_userConverter.UserToUserDTO(response));
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> UserLogin(User user)
+        public async Task<IActionResult> UserLogin(UserDTO userDTO)
         {
-            var userData = _context.User.Where(u => u.UserName == user.UserName).FirstOrDefault();
+            var response = _userService.login(_userConverter.UserDTOToUser(userDTO));
 
-            if (userData == null)
-            {
-                return NotFound("Usuario nao encontrado!");
-            }
+            if (response == null)
+                return BadRequest();
 
-            if (userData.Password != user.Password)
-            {
-                return BadRequest("Senha errada!");
-            }
-
-            var token = TokenService.generateToken(userData);
-            userData.Password = "";
-            return Ok(new { user = userData, token = token });
+            return Ok(response);
         }
 
         [HttpPost("register")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> RegisterUser(User user)
+        public async Task<IActionResult> RegisterUser(UserDTO userDTO)
         {
-            _context.User.Add(user);
-            await _context.SaveChangesAsync();
+            var response = _userService.CreateUser(_userConverter.UserDTOToUser(userDTO));
 
-            return Ok("Usuario criado com sucesso!");
+            if (response == null)
+                return BadRequest();
+
+            return Ok(response);
         }
 
         [HttpPut]
         [Authorize]
-        public async Task<ActionResult<string>> UpdateStatus(User request)
+        public async Task<ActionResult<string>> UpdateUser(UserDTO request)
         {
-            var dbUser = await _context.User.FindAsync(request.Id);
-            if (dbUser == null)
-            {
-                return NotFound("User nao encontrado!");
-            }
+            var response = _userService.UpdateUser(_userConverter.UserDTOToUser(request));
 
-            dbUser.UserName = request.UserName;
-            dbUser.Password = request.Password;
-            dbUser.Role = request.Role;
+            if (response == null)
+                return BadRequest();
 
-            await _context.SaveChangesAsync();
-
-            return Ok("Sucesso em atualizar user!");
+            return Ok(response);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<string>> DeleteStatus(int id)
+        public async Task<ActionResult<string>> DeleteUser(UserDTO userDTO)
         {
-            var dbUser = await _context.User.FindAsync(id);
-            if (dbUser == null)
-            {
-                return NotFound("user nao encontrado!");
-            }
+            var response = _userService.DeleteUser(_userConverter.UserDTOToUser(userDTO));
 
-            _context.User.Remove(dbUser);
-            await _context.SaveChangesAsync();
-            return Ok("Sucesso em apagar User!");
+            if (response == null)
+                return BadRequest();
+
+            return Ok(response);
         }
 
     }

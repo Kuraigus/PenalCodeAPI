@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using PenalCodeAPI.DTO;
-
-namespace PenalCodeAPI.Model
+﻿namespace PenalCodeAPI.Model
 {
     public class User
     {
@@ -9,7 +6,6 @@ namespace PenalCodeAPI.Model
         public string UserName { get; set; } = String.Empty;
         public string Password { get; set; } = String.Empty;
         public string Role { get; set; } = String.Empty;
-
 
     }
 }

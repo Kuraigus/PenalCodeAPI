@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using PenalCodeAPI.Services;
+using PenalCodeAPI.Converters;
+using PenalCodeAPI.DTO;
 
 namespace PenalCodeAPI.Controllers
 {
@@ -8,71 +11,72 @@ namespace PenalCodeAPI.Controllers
     [Authorize]
     public class StatusController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly StatusService _statusService;
+        private readonly StatusConverter _statusConverter;
 
-        public StatusController(DataContext context)
+        public StatusController(StatusService statusService, StatusConverter statusConverter)
         {
-            _context = context;
+            _statusService = statusService;
+            _statusConverter = statusConverter;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<User>>> Get()
+        public async Task<ActionResult<List<StatusDTO>>> Get()
         {
-            return Ok(await _context.Status.ToListAsync());
+            var response = _statusService.GetAllStatus();
+
+            if (response == null)
+                return BadRequest();
+
+            return Ok(response);
         }
 
         [HttpGet("getById/{id}")]
         public async Task<ActionResult<Status>> GetById(int id)
         {
-            var status = await _context.Status.FindAsync(id);
-            if (status == null)
-            {
-                return NotFound("Status nao encontrado!");
-            }
-            return Ok(status);
+            var response = _statusService.GetStatus(id);
+
+            if (response == null)
+                return BadRequest();
+
+            return Ok(_statusConverter.StatusToStatusDTO(response));
         }
 
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<string>> AddStatus(Status status)
+        public async Task<ActionResult<string>> AddStatus(StatusDTO statusDTO)
         {
-            _context.Status.Add(status);
-            await _context.SaveChangesAsync();
+            var response = _statusService.CreateStatus(_statusConverter.StatusDTOToStatus(statusDTO));
 
-            return Ok("Sucesso em adicionar Status!");
+            if (response == null)
+                return BadRequest();
+
+            return Ok(response);
         }
 
         [HttpPut]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<string>> UpdateStatus(Status request)
+        public async Task<ActionResult<string>> UpdateStatus(StatusDTO statusDTO)
         {
-            var dbStatus = await _context.Status.FindAsync(request.Id);
-            if (dbStatus == null)
-            {
-                return NotFound("Status nao encontrado!");
-            }
+            var response = _statusService.UpdateStatus(_statusConverter.StatusDTOToStatus(statusDTO));
 
-            dbStatus.Name = request.Name;
+            if (response == null)
+                return BadRequest();
 
-            await _context.SaveChangesAsync();
-
-            return Ok("Sucesso em atualizar user!");
+            return Ok(response);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<string>> DeleteStatus(int id)
+        public async Task<ActionResult<string>> DeleteStatus(StatusDTO statusDTO)
         {
-            var dbStatus = await _context.Status.FindAsync(id);
-            if (dbStatus == null)
-            {
-                return NotFound("Status nao encontrado!");
-            }
+            var response = _statusService.DeleteStatus(_statusConverter.StatusDTOToStatus(statusDTO));
 
-            _context.Status.Remove(dbStatus);
-            await _context.SaveChangesAsync();
-            return Ok("Sucesso em apagar Status!");
+            if (response == null)
+                return BadRequest();
+
+            return Ok(response);
         }
     }
 }
