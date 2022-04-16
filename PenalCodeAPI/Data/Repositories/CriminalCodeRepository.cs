@@ -1,5 +1,4 @@
 ﻿using PenalCodeAPI.Interfaces;
-using System.Security.Claims;
 
 namespace PenalCodeAPI.Repositories
 {

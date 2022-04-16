@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-
-namespace PenalCodeAPI.Interfaces
+﻿namespace PenalCodeAPI.Interfaces
 {
     public interface ICriminalCodeRepository
     {

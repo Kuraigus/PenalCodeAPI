@@ -1,6 +1,4 @@
-﻿using PenalCodeAPI.DTO;
-using PenalCodeAPI.Interfaces;
-using System.Security.Claims;
+﻿using PenalCodeAPI.Interfaces;
 
 namespace PenalCodeAPI.Services
 {
