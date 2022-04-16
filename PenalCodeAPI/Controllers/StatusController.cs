@@ -66,9 +66,9 @@ namespace PenalCodeAPI.Controllers
         {
             try
             {
-                var response = _statusService.CreateStatus(_statusConverter.StatusDTOToStatus(statusDTO));
+                _statusService.CreateStatus(_statusConverter.StatusDTOToStatus(statusDTO));
 
-                return Ok(response);
+                return Ok();
             }
             catch (KeyNotFoundException e)
             {
@@ -87,9 +87,9 @@ namespace PenalCodeAPI.Controllers
         {
             try
             {
-                var response = _statusService.UpdateStatus(_statusConverter.StatusDTOToStatus(statusDTO));
+                _statusService.UpdateStatus(_statusConverter.StatusDTOToStatus(statusDTO));
 
-                return Ok(response);
+                return Ok();
             }
             catch (KeyNotFoundException e)
             {
@@ -108,9 +108,9 @@ namespace PenalCodeAPI.Controllers
         {
             try
             {
-                var response = _statusService.DeleteStatus(_statusConverter.StatusDTOToStatus(statusDTO));
+                _statusService.DeleteStatus(_statusConverter.StatusDTOToStatus(statusDTO));
 
-                return Ok(response);
+                return Ok();
             }
             catch (KeyNotFoundException e)
             {

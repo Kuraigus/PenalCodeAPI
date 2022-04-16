@@ -3,8 +3,8 @@
     public interface IUserRepository
     {
         User GetUser(int id);
-        string CreateUser(User user);
-        string DeleteUser(User user);
+        void CreateUser(User user);
+        void DeleteUser(User user);
         User FindUserByUserName(string userName);
 
     }

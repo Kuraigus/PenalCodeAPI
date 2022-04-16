@@ -1,5 +1,6 @@
 ﻿using PenalCodeAPI.DTO;
 using PenalCodeAPI.Interfaces;
+using System.Security.Claims;
 
 namespace PenalCodeAPI.Services
 {
@@ -92,18 +93,16 @@ namespace PenalCodeAPI.Services
             return response;
         }
 
-        public string CreateCriminalCode(CriminalCode criminalCode)
+        public void CreateCriminalCode(CriminalCode criminalCode, string userId)
         {
-            if (_userRepository.GetUser(criminalCode.CreateUserId) == null)
-                throw new KeyNotFoundException("User nao encontrado");
             if (_statusRepository.GetStatus(criminalCode.StatusId) == null)
                 throw new KeyNotFoundException("Status nao encontrado");
-            
 
-            return _criminalCodeRepository.CreateCriminalCode(criminalCode);
+            criminalCode.CreateUserId = Int32.Parse(userId);
+            criminalCode.UpdateUserId = Int32.Parse(userId);
         }
 
-        public string UpdateCriminalCode(CriminalCode request)
+        public void UpdateCriminalCode(CriminalCode request, string userId)
         {
             var dbCriminalCode = _criminalCodeRepository.GetCriminalCode(request.Id);
             if (dbCriminalCode == null)
@@ -112,23 +111,19 @@ namespace PenalCodeAPI.Services
             dbCriminalCode.Name = request.Name;
             dbCriminalCode.Description = request.Description;
             dbCriminalCode.UpdateDate = request.UpdateDate;
-            dbCriminalCode.UpdateUserId = request.UpdateUserId;
+            dbCriminalCode.UpdateUserId = Int32.Parse(userId);
             dbCriminalCode.PrisonTime = request.PrisonTime;
             dbCriminalCode.Penalty = request.Penalty;
             dbCriminalCode.StatusId = request.StatusId;
 
             _genericRepository.SaveChanges();
-
-            return "Sucesso em atualizar codigo penal!";
         }
 
-        public string DeleteCriminalCode(int id)
+        public void DeleteCriminalCode(int id)
         {
             var criminalCode = _criminalCodeRepository.GetCriminalCode(id);
             if (criminalCode == null)
                 throw new KeyNotFoundException("Codigo penal nao encontrado!");
-
-            return _criminalCodeRepository.DeleteCriminalCode(criminalCode);
         }
 
     }

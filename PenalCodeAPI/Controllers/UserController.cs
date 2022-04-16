@@ -66,9 +66,9 @@ namespace PenalCodeAPI.Controllers
         {
             try
             {
-                var response = _userService.CreateUser(_userConverter.UserDTOToUser(userDTO));
+                _userService.CreateUser(_userConverter.UserDTOToUser(userDTO));
 
-                return Ok(response);
+                return Ok();
             }
             catch (KeyNotFoundException e)
             {
@@ -107,9 +107,9 @@ namespace PenalCodeAPI.Controllers
         {
             try
             {
-                var response = _userService.DeleteUser(_userConverter.UserDTOToUser(userDTO));
+                _userService.DeleteUser(_userConverter.UserDTOToUser(userDTO));
 
-                return Ok(response);
+                return Ok();
             }
             catch (KeyNotFoundException e)
             {

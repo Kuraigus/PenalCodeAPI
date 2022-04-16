@@ -4,7 +4,7 @@
     {
         ICollection<Status> GetAllStatus();
         Status GetStatus(int id);
-        string CreateStatus(Status status);
-        string DeleteStatus(Status status);
+        void CreateStatus(Status status);
+        void DeleteStatus(Status status);
     }
 }

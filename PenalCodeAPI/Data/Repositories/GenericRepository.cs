@@ -11,11 +11,9 @@ namespace PenalCodeAPI.Repositories
             _context = context;
         }
 
-        public string SaveChanges()
+        public void SaveChanges()
         {
             _context.SaveChanges();
-
-            return "Atualizacao feita com sucesso!";
         }
     }
 }

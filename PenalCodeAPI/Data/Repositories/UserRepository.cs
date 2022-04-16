@@ -11,20 +11,16 @@ namespace PenalCodeAPI.Repositories
             _context = context;
         }
 
-        public string CreateUser(User user)
+        public void CreateUser(User user)
         {
             _context.User.Add(user);
             _context.SaveChanges();
-
-            return ("Usuario criado com sucesso!");
         }
 
-        public string DeleteUser(User user)
+        public void DeleteUser(User user)
         {
             _context.User.Remove(user);
             _context.SaveChanges();
-
-            return ("Usuario deleta com sucesso!");
         }
 
         public User FindUserByUserName(string userName)

@@ -1,4 +1,5 @@
 ﻿using PenalCodeAPI.Interfaces;
+using System.Security.Claims;
 
 namespace PenalCodeAPI.Repositories
 {
@@ -25,18 +26,16 @@ namespace PenalCodeAPI.Repositories
             return _context.CriminalCodes.Find(id);
         }
         
-        public string CreateCriminalCode(CriminalCode criminalCode)
+        public void  CreateCriminalCode(CriminalCode criminalCode)
         {
             _context.CriminalCodes.Add(criminalCode);
             _context.SaveChanges();
-            return "Sucesso em adicionar codigo penal!";
         }
 
-        public string DeleteCriminalCode(CriminalCode criminalCode)
+        public void DeleteCriminalCode(CriminalCode criminalCode)
         {
             _context.CriminalCodes.Remove(criminalCode);
             _context.SaveChanges();
-            return "Sucesso em apagar codigo penal!";
         }
     }
 }

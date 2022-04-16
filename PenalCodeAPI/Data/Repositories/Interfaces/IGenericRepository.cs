@@ -2,6 +2,6 @@
 {
     public interface IGenericRepository
     {
-        string SaveChanges();
+        void SaveChanges();
     }
 }

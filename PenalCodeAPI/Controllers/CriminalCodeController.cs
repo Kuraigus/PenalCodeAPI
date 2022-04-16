@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PenalCodeAPI.Converters;
 using PenalCodeAPI.DTO;
 using PenalCodeAPI.Services;
+using System.Security.Claims;
 
 namespace PenalCodeAPI.Controllers
 {
@@ -65,9 +66,10 @@ namespace PenalCodeAPI.Controllers
         {
             try
             {
-                var response = _criminalCodeService.CreateCriminalCode(_criminalCodeConverter.CriminalCodeDTOToCriminalCode(criminalCodeDTO));
+                var claims = User.Claims.Where(c => c.Type == ClaimTypes.Name).FirstOrDefault();
+                _criminalCodeService.CreateCriminalCode(_criminalCodeConverter.CriminalCodeDTOToCriminalCode(criminalCodeDTO), claims.Value);
 
-                return Ok(response);
+                return Ok();
             }
             catch (KeyNotFoundException e)
             {
@@ -85,9 +87,10 @@ namespace PenalCodeAPI.Controllers
         {
             try
             {
-                var response = _criminalCodeService.UpdateCriminalCode(_criminalCodeConverter.CriminalCodeDTOToCriminalCode(criminalCodeDTO));
+                var claims = User.Claims.Where(c => c.Type == ClaimTypes.Name).FirstOrDefault();
+                _criminalCodeService.UpdateCriminalCode(_criminalCodeConverter.CriminalCodeDTOToCriminalCode(criminalCodeDTO), claims.Value);
              
-                return Ok(response);
+                return Ok();
             }
             catch (KeyNotFoundException e)
             {
@@ -105,9 +108,9 @@ namespace PenalCodeAPI.Controllers
         {
             try
             {
-                var response = _criminalCodeService.DeleteCriminalCode(id);
+                _criminalCodeService.DeleteCriminalCode(id);
 
-                return Ok(response);
+                return Ok();
             }
             catch (KeyNotFoundException e)
             {

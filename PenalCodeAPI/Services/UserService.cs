@@ -36,11 +36,9 @@ namespace PenalCodeAPI.Services
             return reponse;
         }
 
-        public string CreateUser(User user)
+        public void CreateUser(User user)
         {
-            var response = _userRepository.CreateUser(user);
-
-            return response;
+            _userRepository.CreateUser(user);
         }
 
         public string UpdateUser(User request)
@@ -58,15 +56,13 @@ namespace PenalCodeAPI.Services
             return "Sucesso em atualizar user!";
         }
 
-        public string DeleteUser(User user)
+        public void DeleteUser(User user)
         {
             var dbUser = _userRepository.GetUser(user.Id);
             if (dbUser == null)
                 throw new KeyNotFoundException("Usuario nao encontrado!");
 
-            var response = _userRepository.DeleteUser(dbUser);
-
-            return response;
+            _userRepository.DeleteUser(dbUser);
         }
 
     }

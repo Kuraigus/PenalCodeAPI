@@ -21,20 +21,18 @@ namespace PenalCodeAPI.Repositories
             return _context.Status.Find(id);
         }
 
-        public string CreateStatus(Status status)
+        public void CreateStatus(Status status)
         {
             _context.Status.Add(status);
             _context.SaveChanges();
 
-            return "Sucesso em criar status!";
         }
 
-        public string DeleteStatus(Status status)
+        public void DeleteStatus(Status status)
         {
             _context.Status.Remove(status);
             _context.SaveChanges();
 
-            return "Sucesso em deletar status!";
         }
 
 
