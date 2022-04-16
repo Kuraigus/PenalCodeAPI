@@ -20,21 +20,25 @@ namespace PenalCodeAPI.Services
 
         public Status GetStatus(int id)
         {
-            return _statusRepository.GetStatus(id);
+            var response = _statusRepository.GetStatus(id);
+            if (response == null)
+                throw new KeyNotFoundException("Status nao encontrado!");
+
+            return response;
         }
 
         public string CreateStatus(Status status)
         {
             var response = _statusRepository.CreateStatus(status);
 
-            return "Sucesso em criar status!";
+            return response;
         }
 
         public string UpdateStatus(Status request)
         {
             var dbStatus = _statusRepository.GetStatus(request.Id);
             if (dbStatus == null)
-                return null;
+                throw new KeyNotFoundException("Status nao encontrado!");
 
             dbStatus.Name = request.Name;
 
@@ -45,9 +49,13 @@ namespace PenalCodeAPI.Services
 
         public string DeleteStatus(Status status)
         {
+            var dbStatus = _statusRepository.GetStatus(status.Id);
+            if (dbStatus == null)
+                throw new KeyNotFoundException("Status nao encontrado!");
+
             var response = _statusRepository.DeleteStatus(status);
 
-            return "Sucesso em deletar status!";
+            return response;
         }
     }
 }

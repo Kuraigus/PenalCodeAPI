@@ -19,11 +19,11 @@ namespace PenalCodeAPI.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Penalty = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PrisonTime = table.Column<int>(type: "int", nullable: false),
-                    StatusId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StatusId = table.Column<int>(type: "int", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdateUserId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CreateUserId = table.Column<int>(type: "int", nullable: false),
+                    UpdateUserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

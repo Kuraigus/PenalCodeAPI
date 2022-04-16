@@ -17,14 +17,9 @@ namespace PenalCodeAPI.Services
         {
             var dbUser = _userRepository.FindUserByUserName(user.UserName);
 
-            if (dbUser == null)
+            if (dbUser == null || dbUser.Password != user.Password)
             {
-                return "Usuario nao encontrado!";
-            }
-
-            if (dbUser.Password != user.Password)
-            {
-                return "Senha errada!";
+                throw new KeyNotFoundException("Usuario nao encontrado ou senha incorreta!");
             }
 
             var token = TokenService.generateToken(dbUser);
@@ -36,7 +31,7 @@ namespace PenalCodeAPI.Services
             var reponse = _userRepository.GetUser(id);
 
             if (reponse == null)
-                return null;
+                throw new KeyNotFoundException("Usuario nao encontrado!");
 
             return reponse;
         }
@@ -52,7 +47,7 @@ namespace PenalCodeAPI.Services
         {
             var dbUser = _userRepository.GetUser(request.Id);
             if (dbUser == null)
-                return null;
+                throw new KeyNotFoundException("Usuario nao encontrado!");
 
             dbUser.UserName = request.UserName;
             dbUser.Password = request.Password;
@@ -67,7 +62,7 @@ namespace PenalCodeAPI.Services
         {
             var dbUser = _userRepository.GetUser(user.Id);
             if (dbUser == null)
-                return null;
+                throw new KeyNotFoundException("Usuario nao encontrado!");
 
             var response = _userRepository.DeleteUser(dbUser);
 

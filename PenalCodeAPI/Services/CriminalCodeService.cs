@@ -9,11 +9,18 @@ namespace PenalCodeAPI.Services
 
         private readonly ICriminalCodeRepository _criminalCodeRepository;
         private readonly IGenericRepository _genericRepository;
+        private readonly IStatusRepository _statusRepository;
+        private readonly IUserRepository _userRepository;
 
-        public CriminalCodeService(ICriminalCodeRepository criminalCodeRepository, IGenericRepository genericRepository)
+        public CriminalCodeService(ICriminalCodeRepository criminalCodeRepository, 
+            IGenericRepository genericRepository,
+            IStatusRepository statusRepository, 
+            IUserRepository userRepository)
         {
             _criminalCodeRepository = criminalCodeRepository;
             _genericRepository = genericRepository;
+            _statusRepository = statusRepository;
+            _userRepository = userRepository;
         }
 
         public PageableResponse<CriminalCode> GetCriminalCodes(int page, string? sort, string? filter)
@@ -81,10 +88,7 @@ namespace PenalCodeAPI.Services
 
             if (filter != null)
             {
-                codes = codes.Where(c => c.Name.Contains(filter) ||
-                                    c.CreateUserId.Contains(filter) ||
-                                    c.UpdateUserId.Contains(filter) ||
-                                    c.StatusId.Contains(filter)).ToList();
+                codes = codes.Where(c => c.Name.Contains(filter)).ToList();
             }
 
 
@@ -121,11 +125,21 @@ namespace PenalCodeAPI.Services
 
         public CriminalCode GetCriminalCode(int id)
         {
-            return _criminalCodeRepository.GetCriminalCode(id);
+            var response = _criminalCodeRepository.GetCriminalCode(id);
+            if (response == null)
+                throw new KeyNotFoundException("Codigo penal nao encontrado!");
+
+            return response;
         }
 
         public string CreateCriminalCode(CriminalCode criminalCode)
         {
+            if (_userRepository.GetUser(criminalCode.CreateUserId) == null)
+                throw new KeyNotFoundException("User nao encontrado");
+            if (_statusRepository.GetStatus(criminalCode.StatusId) == null)
+                throw new KeyNotFoundException("Status nao encontrado");
+            
+
             return _criminalCodeRepository.CreateCriminalCode(criminalCode);
         }
 
@@ -133,7 +147,7 @@ namespace PenalCodeAPI.Services
         {
             var dbCriminalCode = _criminalCodeRepository.GetCriminalCode(request.Id);
             if (dbCriminalCode == null)
-                return null;
+                throw new KeyNotFoundException("Codigo penal nao encontrado!");
 
             dbCriminalCode.Name = request.Name;
             dbCriminalCode.Description = request.Description;
@@ -152,8 +166,8 @@ namespace PenalCodeAPI.Services
         {
             var criminalCode = _criminalCodeRepository.GetCriminalCode(id);
             if (criminalCode == null)
-                return null;
-            
+                throw new KeyNotFoundException("Codigo penal nao encontrado!");
+
             return _criminalCodeRepository.DeleteCriminalCode(criminalCode);
         }
 
