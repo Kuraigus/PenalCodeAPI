@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using PenalCodeAPI.Interfaces;
 using PenalCodeAPI.Repositories;
 using PenalCodeAPI.Services;
+using PenalCodeAPI.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,9 @@ builder.Services.AddScoped<IGenericRepository, GenericRepository>();
 builder.Services.AddScoped<CriminalCodeService>();
 builder.Services.AddScoped<StatusService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CriminalCodeConverter>();
+builder.Services.AddScoped<StatusConverter>();
+builder.Services.AddScoped<UserConverter>();
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
