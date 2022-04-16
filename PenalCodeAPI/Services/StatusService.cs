@@ -32,9 +32,9 @@ namespace PenalCodeAPI.Services
             _statusRepository.CreateStatus(status);
         }
 
-        public void UpdateStatus(Status request)
+        public void UpdateStatus(Status request, int id)
         {
-            var dbStatus = _statusRepository.GetStatus(request.Id);
+            var dbStatus = _statusRepository.GetStatus(id);
             if (dbStatus == null)
                 throw new KeyNotFoundException("Status nao encontrado!");
 

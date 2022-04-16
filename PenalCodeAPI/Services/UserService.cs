@@ -43,9 +43,9 @@ namespace PenalCodeAPI.Services
             _userRepository.CreateUser(user);
         }
 
-        public string UpdateUser(User request)
+        public string UpdateUser(User request, int id)
         {
-            var dbUser = _userRepository.GetUser(request.Id);
+            var dbUser = _userRepository.GetUser(id);
             if (dbUser == null)
                 throw new KeyNotFoundException("Usuario nao encontrado!");
 

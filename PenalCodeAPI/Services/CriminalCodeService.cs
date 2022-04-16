@@ -104,9 +104,9 @@ namespace PenalCodeAPI.Services
             _criminalCodeRepository.CreateCriminalCode(criminalCode);
         }
 
-        public void UpdateCriminalCode(CriminalCode request, string userId)
+        public void UpdateCriminalCode(CriminalCode request, string userId, int id)
         {
-            var dbCriminalCode = _criminalCodeRepository.GetCriminalCode(request.Id);
+            var dbCriminalCode = _criminalCodeRepository.GetCriminalCode(id);
             if (dbCriminalCode == null)
                 throw new KeyNotFoundException("Codigo penal nao encontrado!");
 

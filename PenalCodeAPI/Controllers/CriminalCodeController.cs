@@ -81,14 +81,14 @@ namespace PenalCodeAPI.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<string>> UpdateCriminalCode(EditCriminalCodeDTO EditcriminalCodeDTO)
+        public async Task<ActionResult<string>> UpdateCriminalCode(EditCriminalCodeDTO EditcriminalCodeDTO, int id)
         {
             try
             {
                 var claims = User.Claims.Where(c => c.Type == ClaimTypes.Name).FirstOrDefault();
-                _criminalCodeService.UpdateCriminalCode(_criminalCodeConverter.EditCriminalCodeDTOToCriminalCode(EditcriminalCodeDTO), claims.Value);
+                _criminalCodeService.UpdateCriminalCode(_criminalCodeConverter.EditCriminalCodeDTOToCriminalCode(EditcriminalCodeDTO), claims.Value, id);
              
                 return Ok();
             }

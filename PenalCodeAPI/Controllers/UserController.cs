@@ -80,13 +80,13 @@ namespace PenalCodeAPI.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [Authorize]
-        public async Task<ActionResult<string>> UpdateUser(UserRegisterDTO userRegisterDTO)
+        public async Task<ActionResult<string>> UpdateUser(UserRegisterDTO userRegisterDTO, int id)
         {
             try
             {
-                var response = _userService.UpdateUser(_userConverter.UserRegisterDTOToUser(userRegisterDTO));
+                var response = _userService.UpdateUser(_userConverter.UserRegisterDTOToUser(userRegisterDTO), id);
 
                 return Ok(response);
             }

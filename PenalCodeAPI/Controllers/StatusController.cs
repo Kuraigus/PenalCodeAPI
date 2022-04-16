@@ -81,13 +81,13 @@ namespace PenalCodeAPI.Controllers
 
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<string>> UpdateStatus(StatusDTO statusDTO)
+        public async Task<ActionResult<string>> UpdateStatus(int id, StatusDTO statusDTO)
         {
             try
             {
-                _statusService.UpdateStatus(_statusConverter.StatusDTOToStatus(statusDTO));
+                _statusService.UpdateStatus(_statusConverter.StatusDTOToStatus(statusDTO), id);
 
                 return Ok();
             }
