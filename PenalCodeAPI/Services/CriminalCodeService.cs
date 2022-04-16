@@ -30,70 +30,27 @@ namespace PenalCodeAPI.Services
 
             var codes = _criminalCodeRepository.GetCriminalCodes(pageResults, page, out pageCount);
 
-            if (sort != null)
+            if (sort != null) 
             {
-                SortType sortType = SortType.none;
-
-                var property = codes.GetType().GetProperty(sort).GetValue(codes, null);
-
-                codes = codes.OrderBy(c => c.GetType().GetProperty(sort).GetValue(c, null)).ToList();
-
-                //switch (sortType.FromString(sort))
-                //{
-                //    case SortType.Name:
-                //        {
-                //            codes = codes.OrderBy(c => c.Name).ToList();
-                //            break;
-                //        }
-
-                //    case SortType.CreateDate:
-                //        {
-                //            codes = codes.OrderBy(c => c.CreateDate).ToList();
-                //            break;
-                //        }
-
-                //    case SortType.UpdateDate:
-                //        {
-                //            codes = codes.OrderBy(c => c.UpdateDate).ToList();
-                //            break;
-                //        }
-
-                //    case SortType.CreateUserId:
-                //        {
-                //            codes.OrderBy(c => c.CreateUserId).ToList();
-                //            break;
-                //        }
-
-                //    case SortType.UpdateUserId:
-                //        {
-                //            codes = codes.OrderBy(c => c.UpdateUserId).ToList();
-                //            break;
-                //        }
-
-                //    case SortType.StatusId:
-                //        {
-                //            codes = codes.OrderBy(c => c.StatusId).ToList();
-                //            break;
-                //        }
-
-                //    case SortType.Penalty:
-                //        {
-                //            codes = codes = codes.OrderBy(c => c.Penalty).ToList();
-                //            break;
-                //        }
-
-                //    case SortType.PrisonTime:
-                //        {
-                //            codes = codes.OrderBy(c => c.PrisonTime).ToList();
-                //            break;
-                //        }
-                //}
+                codes = codes.OrderBy(c => 
+                {
+                    var property = c.GetType().GetProperty(sort);
+                    if (property != null)
+                        return property.GetValue(c);
+                    return null;
+                }).ToList();
             }
 
             if (filter != null)
-            {
-                codes = codes.Where(c => c.Name.Contains(filter)).ToList();
-            }
+                codes = codes.Where(c => c.Name.Contains(filter) || 
+                                         c.Description.Contains(filter) ||
+                                         c.UpdateUserId == Int32.Parse(filter) ||
+                                         c.CreateUserId == Int32.Parse(filter) ||
+                                         c.StatusId == Int32.Parse(filter) ||
+                                         c.PrisonTime == Int32.Parse(filter) ||
+                                         c.Penalty == Int32.Parse(filter)
+                                         ).ToList();
+
 
 
             List<CriminalCode> criminalCode = new List<CriminalCode>();
