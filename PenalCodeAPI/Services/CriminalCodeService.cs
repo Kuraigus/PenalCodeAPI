@@ -34,56 +34,60 @@ namespace PenalCodeAPI.Services
             {
                 SortType sortType = SortType.none;
 
-                switch (sortType.FromString(sort))
-                {
-                    case SortType.Name:
-                        {
-                            codes = codes.OrderBy(c => c.Name).ToList();
-                            break;
-                        }
+                var property = codes.GetType().GetProperty(sort).GetValue(codes, null);
 
-                    case SortType.CreateDate:
-                        {
-                            codes = codes.OrderBy(c => c.CreateDate).ToList();
-                            break;
-                        }
+                codes = codes.OrderBy(c => c.GetType().GetProperty(sort).GetValue(c, null)).ToList();
 
-                    case SortType.UpdateDate:
-                        {
-                            codes = codes.OrderBy(c => c.UpdateDate).ToList();
-                            break;
-                        }
+                //switch (sortType.FromString(sort))
+                //{
+                //    case SortType.Name:
+                //        {
+                //            codes = codes.OrderBy(c => c.Name).ToList();
+                //            break;
+                //        }
 
-                    case SortType.CreateUserId:
-                        {
-                            codes.OrderBy(c => c.CreateUserId).ToList();
-                            break;
-                        }
+                //    case SortType.CreateDate:
+                //        {
+                //            codes = codes.OrderBy(c => c.CreateDate).ToList();
+                //            break;
+                //        }
 
-                    case SortType.UpdateUserId:
-                        {
-                            codes = codes.OrderBy(c => c.UpdateUserId).ToList();
-                            break;
-                        }
+                //    case SortType.UpdateDate:
+                //        {
+                //            codes = codes.OrderBy(c => c.UpdateDate).ToList();
+                //            break;
+                //        }
 
-                    case SortType.StatusId:
-                        {
-                            codes = codes.OrderBy(c => c.StatusId).ToList();
-                            break;
-                        }
+                //    case SortType.CreateUserId:
+                //        {
+                //            codes.OrderBy(c => c.CreateUserId).ToList();
+                //            break;
+                //        }
 
-                    case SortType.Penalty:
-                        {
-                            codes = codes = codes.OrderBy(c => c.Penalty).ToList();
-                            break;
-                        }
+                //    case SortType.UpdateUserId:
+                //        {
+                //            codes = codes.OrderBy(c => c.UpdateUserId).ToList();
+                //            break;
+                //        }
 
-                    case SortType.PrisonTime:
-                        {
-                            codes = codes.OrderBy(c => c.PrisonTime).ToList();
-                            break;
-                        }
-                }
+                //    case SortType.StatusId:
+                //        {
+                //            codes = codes.OrderBy(c => c.StatusId).ToList();
+                //            break;
+                //        }
+
+                //    case SortType.Penalty:
+                //        {
+                //            codes = codes = codes.OrderBy(c => c.Penalty).ToList();
+                //            break;
+                //        }
+
+                //    case SortType.PrisonTime:
+                //        {
+                //            codes = codes.OrderBy(c => c.PrisonTime).ToList();
+                //            break;
+                //        }
+                //}
             }
 
             if (filter != null)
@@ -170,7 +174,6 @@ namespace PenalCodeAPI.Services
 
             return _criminalCodeRepository.DeleteCriminalCode(criminalCode);
         }
-
 
     }
 }

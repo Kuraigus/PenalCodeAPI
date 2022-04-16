@@ -35,6 +35,10 @@ Exercicio desenvolvido pela cidade alta com objetivo de testar conhecimentos tec
 
 
 # HOW TO
+
+## Start server
+
+
 ## DataBase
 
 Configurar sua conexao do sql dentro de appsettings.json
@@ -44,6 +48,9 @@ Configurar sua conexao do sql dentro de appsettings.json
 Para realizar autenticacao, chamar primeiro a rota de log in, logar com usuario admin, voce recebera um token, e com o token
 autorizar as chamadas, dentro do swagger e possivel autenticar com o botao authenticate localizado na parte superior direita
 colocando no padrao "Bearer {tokenRecebidoPeloLogin}"
+
+- Recomendacao criar usuario "admin" diretamento no banco para conseguir token com acesso geral. o usuario pode ter 2 roles, user ou admin.
+
 
 # DOCUMENTACAO
 
